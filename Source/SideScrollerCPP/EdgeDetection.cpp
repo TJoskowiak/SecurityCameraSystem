@@ -21,6 +21,8 @@
 
 #include <cstdint>
 
+using namespace cv;
+
 
 EdgeDetection::EdgeDetection(int width, int height) : VisionAlgorithm(width, height)
 {
@@ -33,20 +35,22 @@ EdgeDetection::~EdgeDetection()
 
 void EdgeDetection::perform(void)
 {
-	// Convert color image to grayscale
-	cv::Mat gray;
-	cv::cvtColor(*_bgrimg, gray, cv::COLOR_BGR2GRAY);
 
-	// Reduce noise with a kernel 3x3
-	cv::Mat detected_edges;
-	cv::blur(gray, detected_edges, cv::Size(3, 3));
+	cv::Mat3b hsv;
+	cv::cvtColor(*_bgrimg, hsv, cv::COLOR_BGR2HSV);
+
+	cv::Mat1b mask1, mask2;
+	inRange(hsv, Scalar(0, 70, 20), Scalar(10, 255, 255), mask1);
+	inRange(hsv, Scalar(170, 70, 50), Scalar(180, 255, 255), mask2);
+
+	Mat1b mask = mask1 | mask2;
 
 	// Run Canny edge detection algorithm on blurred gray image
-	cv::Canny(detected_edges, detected_edges, LOW_THRESHOLD, LOW_THRESHOLD*RATIO, KERNEL_SIZE);
+	cv::Canny(mask, mask, LOW_THRESHOLD, LOW_THRESHOLD*RATIO, KERNEL_SIZE);
 
 	// Find edges
 	cv::Mat nonZeroCoordinates;
-	cv::findNonZero(detected_edges, nonZeroCoordinates);
+	cv::findNonZero(mask, nonZeroCoordinates);
 
 	// Store vertices (edge coordinates)
 	_vertexCount = min((int)nonZeroCoordinates.total(), MAX_VERTICES);
