@@ -65,9 +65,9 @@ void EdgeDetection::draw(AHUD* hud, int leftx, int topy)
 	}
 }
 
-/*
+
 VisionAlgorithm * getInstance(int width, int height)
 {
 	return new EdgeDetection(width, height);
 }
-*/
+

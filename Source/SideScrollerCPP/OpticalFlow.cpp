@@ -54,8 +54,9 @@ void OpticalFlow::draw(AHUD* hud, int leftx, int topy)
 {
 
 }
-
+/*
 VisionAlgorithm * getInstance(int width, int height)
 {
 	return new OpticalFlow(width, height);
 }
+*/
